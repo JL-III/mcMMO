@@ -54,8 +54,6 @@ import com.gmail.nossr50.util.upgrade.UpgradeManager;
 import com.gmail.nossr50.worldguard.WorldGuardManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.shatteredlands.shatt.backup.ZipLibrary;
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -272,17 +270,18 @@ public class mcMMO extends JavaPlugin {
             }
 
             //If anonymous statistics are enabled then use them
-            Metrics metrics;
-
-            if(generalConfig.getIsMetricsEnabled()) {
-                metrics = new Metrics(this, 3894);
-                metrics.addCustomChart(new SimplePie("version", () -> getDescription().getVersion()));
-
-                if(generalConfig.getIsRetroMode())
-                    metrics.addCustomChart(new SimplePie("leveling_system", () -> "Retro"));
-                else
-                    metrics.addCustomChart(new SimplePie("leveling_system", () -> "Standard"));
-            }
+            //FORKNOTE: METRICS REMOVED
+//            Metrics metrics;
+//
+//            if(generalConfig.getIsMetricsEnabled()) {
+//                metrics = new Metrics(this, 3894);
+//                metrics.addCustomChart(new SimplePie("version", () -> getDescription().getVersion()));
+//
+//                if(generalConfig.getIsRetroMode())
+//                    metrics.addCustomChart(new SimplePie("leveling_system", () -> "Retro"));
+//                else
+//                    metrics.addCustomChart(new SimplePie("leveling_system", () -> "Standard"));
+//            }
         }
 
         catch (Throwable t) {
