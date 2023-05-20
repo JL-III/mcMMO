@@ -56,6 +56,12 @@ public class BlockListener implements Listener {
             return;
         }
 
+        int tileEntityTolerance = 1;
+
+        // beetroot hotfix, potentially other plants may need this fix
+        if(event.getBlockState().getType() == Material.BEETROOTS)
+            tileEntityTolerance = 2;
+
         //Track how many "things" are being dropped
         HashSet<Material> uniqueMaterials = new HashSet<>();
         boolean dontRewardTE = false; //If we suspect TEs are mixed in with other things don't reward bonus drops for anything that isn't a block
@@ -70,7 +76,7 @@ public class BlockListener implements Listener {
                 blockCount++;
         }
 
-        if(uniqueMaterials.size() > 1) {
+        if(uniqueMaterials.size() > tileEntityTolerance) {
             //Too many things are dropping, assume tile entities might be duped
             //Technically this would also prevent something like coal from being bonus dropped if you placed a TE above a coal ore when mining it but that's pretty edge case and this is a good solution for now
             dontRewardTE = true;
@@ -552,7 +558,7 @@ public class BlockListener implements Listener {
                 mcMMOPlayer.checkAbilityActivation(PrimarySkillType.UNARMED);
 
                 if(mcMMOPlayer.getAbilityMode(SuperAbilityType.BERSERK)) {
-                    if (SuperAbilityType.BERSERK.blockCheck(blockState) && EventUtils.simulateBlockBreak(blockState.getBlock(), player, true)) {
+                    if (SuperAbilityType.BERSERK.blockCheck(blockState) && EventUtils.simulateBlockBreak(blockState.getBlock(), player)) {
                         event.setInstaBreak(true);
 
                         if(blockState.getType().getKey().getKey().contains("glass")) {
@@ -627,11 +633,11 @@ public class BlockListener implements Listener {
         }
         else if (mcMMOPlayer.getAbilityMode(SuperAbilityType.BERSERK) && (heldItem.getType() == Material.AIR || mcMMO.p.getGeneralConfig().getUnarmedItemsAsUnarmed())) {
             if (mcMMOPlayer.getUnarmedManager().canUseBlockCracker() && BlockUtils.affectedByBlockCracker(blockState)) {
-                if (EventUtils.simulateBlockBreak(block, player, true) && mcMMOPlayer.getUnarmedManager().blockCrackerCheck(blockState)) {
+                if (EventUtils.simulateBlockBreak(block, player) && mcMMOPlayer.getUnarmedManager().blockCrackerCheck(blockState)) {
                     blockState.update();
                 }
             }
-            else if (!event.getInstaBreak() && SuperAbilityType.BERSERK.blockCheck(blockState) && EventUtils.simulateBlockBreak(block, player, true)) {
+            else if (!event.getInstaBreak() && SuperAbilityType.BERSERK.blockCheck(blockState) && EventUtils.simulateBlockBreak(block, player)) {
                 event.setInstaBreak(true);
 
                 if(blockState.getType().getKey().getKey().contains("glass")) {
@@ -641,7 +647,7 @@ public class BlockListener implements Listener {
                 }
             }
         }
-        else if (mcMMOPlayer.getWoodcuttingManager().canUseLeafBlower(heldItem) && BlockUtils.isNonWoodPartOfTree(blockState) && EventUtils.simulateBlockBreak(block, player, true)) {
+        else if (mcMMOPlayer.getWoodcuttingManager().canUseLeafBlower(heldItem) && BlockUtils.isNonWoodPartOfTree(blockState) && EventUtils.simulateBlockBreak(block, player)) {
             event.setInstaBreak(true);
             SoundManager.sendSound(player, block.getLocation(), SoundType.POP);
         }
