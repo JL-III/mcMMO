@@ -146,6 +146,55 @@ index 74f262289..c7c18380e 100644
          switch (event.getAction()) {
              case RIGHT_CLICK_BLOCK:
                  if (player.getInventory().getItemInOffHand().getType() != Material.AIR && !player.isInsideVehicle() && !player.isSneaking()) {
+diff --git a/src/main/java/com/gmail/nossr50/skills/salvage/SalvageManager.java b/src/main/java/com/gmail/nossr50/skills/salvage/SalvageManager.java
+index e1bf40e08..ff4af6f1a 100644
+--- a/src/main/java/com/gmail/nossr50/skills/salvage/SalvageManager.java
++++ b/src/main/java/com/gmail/nossr50/skills/salvage/SalvageManager.java
+@@ -21,6 +21,10 @@ import com.gmail.nossr50.util.skills.SkillUtils;
+ import com.gmail.nossr50.util.sounds.SoundManager;
+ import com.gmail.nossr50.util.sounds.SoundType;
+ import com.gmail.nossr50.util.text.StringUtils;
++import com.nessxxiii.titantools.itemmanagement.ItemInfo;
++import com.playtheatria.jliii.generalutils.utils.Response;
++import net.kyori.adventure.text.Component;
++import org.bukkit.ChatColor;
+ import org.bukkit.Location;
+ import org.bukkit.Material;
+ import org.bukkit.enchantments.Enchantment;
+@@ -30,6 +34,7 @@ import org.bukkit.inventory.meta.Damageable;
+ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+ import org.bukkit.inventory.meta.ItemMeta;
+ 
++import java.util.List;
+ import java.util.Map;
+ import java.util.Map.Entry;
+ 
+@@ -64,6 +69,17 @@ public class SalvageManager extends SkillManager {
+ 
+     public void handleSalvage(Location location, ItemStack item) {
+         final Player player = getPlayer();
++/*
++Theatria Patch Begins!
++* */
++        Response<List<String>> loreListResponse = ItemInfo.getLore(item);
++        if (loreListResponse.isSuccess()) {
++            player.sendMessage(ChatColor.RED + "You can't salvage items with lore!");
++            return;
++        }
++/*
++Theatria Patch Ends!
++*/
+ 
+         final Salvageable salvageable = mcMMO.getSalvageableManager().getSalvageable(item.getType());
+         final ItemMeta meta = item.getItemMeta();
+@@ -135,7 +151,6 @@ public class SalvageManager extends SkillManager {
+         }
+ 
+         ItemStack salvageResults = new ItemStack(salvageable.getSalvageMaterial(), lotteryResults);
+-
+         //Call event
+         if (EventUtils.callSalvageCheckEvent(player, item, salvageResults, enchantBook).isCancelled()) {
+             return;
 diff --git a/src/main/java/com/gmail/nossr50/skills/woodcutting/WoodcuttingManager.java b/src/main/java/com/gmail/nossr50/skills/woodcutting/WoodcuttingManager.java
 index 09ddaa8bc..2ce985222 100644
 --- a/src/main/java/com/gmail/nossr50/skills/woodcutting/WoodcuttingManager.java
@@ -202,3 +251,213 @@ index fdb93cc40..ea3e31d03 100644
      Cooldowns:
          Berserk: 240
          Blast_Mining: 60
+diff --git a/theatria.patch b/theatria.patch
+new file mode 100644
+index 000000000..e71cad8f5
+--- /dev/null
++++ b/theatria.patch
+@@ -0,0 +1,204 @@
++diff --git a/pom.xml b/pom.xml
++index d67a3afdf..c139063f5 100644
++--- a/pom.xml
+++++ b/pom.xml
++@@ -265,6 +265,12 @@
++             <id>papermc</id>
++             <url>https://repo.papermc.io/repository/maven-public/</url>
++         </repository>
+++<!--        Theatria Patch -->
+++        <repository>
+++            <id>jitpack.io</id>
+++            <url>https://jitpack.io</url>
+++        </repository>
+++<!--        Theatria Patch -->
++     </repositories>
++     <dependencies>
++         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
++@@ -474,5 +480,17 @@
++ <!--            <version>LATEST</version>-->
++ <!--            <scope>test</scope>-->
++ <!--        </dependency>-->
+++<!--        Theatria Patch   -->
+++        <dependency>
+++            <groupId>com.github.JL-III</groupId>
+++            <artifactId>TitanTools</artifactId>
+++            <version>v2.0.1-alpha.23</version>
+++        </dependency>
+++        <dependency>
+++            <groupId>com.github.JL-III</groupId>
+++            <artifactId>GeneralUtils</artifactId>
+++            <version>v1.0.4-alpha.3</version>
+++        </dependency>
+++<!--        Theatria Patch   -->
++     </dependencies>
++ </project>
++diff --git a/src/main/java/com/gmail/nossr50/config/GeneralConfig.java b/src/main/java/com/gmail/nossr50/config/GeneralConfig.java
++index 84e57c9b2..5f687552f 100644
++--- a/src/main/java/com/gmail/nossr50/config/GeneralConfig.java
+++++ b/src/main/java/com/gmail/nossr50/config/GeneralConfig.java
++@@ -681,6 +681,10 @@ public class GeneralConfig extends BukkitConfig {
++         return config.getBoolean("Abilities.Activation.Only_Activate_When_Sneaking", false);
++     }
++ 
+++    public boolean getAbilitiesOnlyActivateWhenStanding() {
+++        return config.getBoolean("Abilities.Activation.Only_Activate_When_Standing", false);
+++    }
+++
++     public boolean getAbilitiesGateEnabled() {
++         return config.getBoolean("Abilities.Activation.Level_Gate_Abilities");
++     }
++diff --git a/src/main/java/com/gmail/nossr50/datatypes/player/McMMOPlayer.java b/src/main/java/com/gmail/nossr50/datatypes/player/McMMOPlayer.java
++index cbf96352f..303b8ec14 100644
++--- a/src/main/java/com/gmail/nossr50/datatypes/player/McMMOPlayer.java
+++++ b/src/main/java/com/gmail/nossr50/datatypes/player/McMMOPlayer.java
++@@ -54,6 +54,8 @@ import com.gmail.nossr50.util.skills.SkillTools;
++ import com.gmail.nossr50.util.skills.SkillUtils;
++ import com.gmail.nossr50.util.sounds.SoundManager;
++ import com.gmail.nossr50.util.sounds.SoundType;
+++import com.nessxxiii.titantools.itemmanagement.ItemInfo;
+++import com.playtheatria.jliii.generalutils.utils.Response;
++ import net.kyori.adventure.identity.Identified;
++ import net.kyori.adventure.identity.Identity;
++ import org.bukkit.Bukkit;
++@@ -70,6 +72,7 @@ import org.jetbrains.annotations.Nullable;
++ import org.jetbrains.annotations.VisibleForTesting;
++ 
++ import java.util.EnumMap;
+++import java.util.List;
++ import java.util.Map;
++ import java.util.UUID;
++ 
++@@ -905,6 +908,22 @@ public class McMMOPlayer implements Identified {
++             return;
++         }
++ 
+++/*
+++ * ATTENTION!
+++ * Theatria Patch started
+++ * Check to see if
+++ * */
+++                Response<List<String>> loreListResponse = ItemInfo.getLore(player.getInventory().getItemInMainHand());
+++        if (loreListResponse.isSuccess()) {
+++                if (ItemInfo.isTitanTool(loreListResponse.value())) {
+++                        return;
+++                    }
+++            }
+++/*
+++* Theatria Patch ended
+++*
+++* */
+++
++         //TODO: This is hacky and temporary solution until skills are move to the new system
++         //Potential problems with this include skills with two super abilities (ie mining)
++         if (!RankUtils.hasUnlockedSubskill(player, subSkillType)) {
++@@ -984,6 +1003,10 @@ public class McMMOPlayer implements Identified {
++             return;
++         }
++ 
+++        if (mcMMO.p.getGeneralConfig().getAbilitiesOnlyActivateWhenStanding() && player.isSneaking()) {
+++            return;
+++        }
+++
++         ItemStack inHand = player.getInventory().getItemInMainHand();
++ 
++         if (mcMMO.getModManager().isCustomTool(inHand) && !mcMMO.getModManager().getTool(inHand).isAbilityEnabled()) {
++diff --git a/src/main/java/com/gmail/nossr50/listeners/PlayerListener.java b/src/main/java/com/gmail/nossr50/listeners/PlayerListener.java
++index 74f262289..c7c18380e 100644
++--- a/src/main/java/com/gmail/nossr50/listeners/PlayerListener.java
+++++ b/src/main/java/com/gmail/nossr50/listeners/PlayerListener.java
++@@ -30,6 +30,8 @@ import com.gmail.nossr50.util.sounds.SoundManager;
++ import com.gmail.nossr50.util.sounds.SoundType;
++ import com.gmail.nossr50.worldguard.WorldGuardManager;
++ import com.gmail.nossr50.worldguard.WorldGuardUtils;
+++import com.nessxxiii.titantools.itemmanagement.ItemInfo;
+++import com.playtheatria.jliii.generalutils.utils.Response;
++ import org.bukkit.Bukkit;
++ import org.bukkit.GameMode;
++ import org.bukkit.Material;
++@@ -50,6 +52,7 @@ import org.bukkit.event.player.*;
++ import org.bukkit.inventory.EquipmentSlot;
++ import org.bukkit.inventory.ItemStack;
++ 
+++import java.util.List;
++ import java.util.Locale;
++ 
++ public class PlayerListener implements Listener {
++@@ -785,6 +788,21 @@ public class PlayerListener implements Listener {
++             }
++         }
++ 
+++/*
+++ * ATTENTION!
+++ * Theatria Patch started
+++ * Check to see if
+++ * */
+++        Response<List<String>> loreListResponse = ItemInfo.getLore(player.getInventory().getItemInMainHand());
+++        if (loreListResponse.isSuccess()) {
+++                if (ItemInfo.isTitanTool(loreListResponse.value())) {
+++                        return;
+++                    }
+++            }
+++/*
+++ * Theatria Patch ended
+++ *
+++ * */
++         switch (event.getAction()) {
++             case RIGHT_CLICK_BLOCK:
++                 if (player.getInventory().getItemInOffHand().getType() != Material.AIR && !player.isInsideVehicle() && !player.isSneaking()) {
++diff --git a/src/main/java/com/gmail/nossr50/skills/woodcutting/WoodcuttingManager.java b/src/main/java/com/gmail/nossr50/skills/woodcutting/WoodcuttingManager.java
++index 09ddaa8bc..2ce985222 100644
++--- a/src/main/java/com/gmail/nossr50/skills/woodcutting/WoodcuttingManager.java
+++++ b/src/main/java/com/gmail/nossr50/skills/woodcutting/WoodcuttingManager.java
++@@ -18,6 +18,8 @@ import com.gmail.nossr50.util.random.ProbabilityUtil;
++ import com.gmail.nossr50.util.skills.CombatUtils;
++ import com.gmail.nossr50.util.skills.RankUtils;
++ import com.gmail.nossr50.util.skills.SkillUtils;
+++import com.nessxxiii.titantools.itemmanagement.ItemInfo;
+++import com.playtheatria.jliii.generalutils.utils.Response;
++ import org.bukkit.Bukkit;
++ import org.bukkit.Material;
++ import org.bukkit.block.Block;
++@@ -73,7 +75,20 @@ public class WoodcuttingManager extends SkillManager {
++                 && ItemUtils.isAxe(heldItem);
++     }
++ 
+++/**
+++ * ATTENTION!
+++ * Theatria Patch Begins
+++ * Disable the ability to use tree feller on titan axes
+++ * */
++     public boolean canUseTreeFeller(ItemStack heldItem) {
+++        //Fetch lore list response if there is lore check if it's a titan tool, if so, return false
+++        Response<List<String>> loreListResponse = ItemInfo.getLore(heldItem);
+++        if (loreListResponse.isSuccess()) {
+++            if (ItemInfo.isTitanTool(loreListResponse.value())) {
+++                return false;
+++            }
+++        }
+++//Theatria Patch Ends
++         return mmoPlayer.getAbilityMode(SuperAbilityType.TREE_FELLER)
++                 && ItemUtils.isAxe(heldItem);
++     }
++@@ -137,7 +152,6 @@ public class WoodcuttingManager extends SkillManager {
++     public void processTreeFeller(BlockState blockState) {
++         Player player = getPlayer();
++         Set<BlockState> treeFellerBlocks = new HashSet<>();
++-
++         treeFellerReachedThreshold = false;
++ 
++         processTree(blockState, treeFellerBlocks);
++diff --git a/src/main/resources/config.yml b/src/main/resources/config.yml
++index fdb93cc40..ea3e31d03 100644
++--- a/src/main/resources/config.yml
+++++ b/src/main/resources/config.yml
++@@ -324,7 +324,9 @@ Abilities:
++     Enabled: true
++     Messages: true
++     Activation:
+++        #If one is true the other must be false
++         Only_Activate_When_Sneaking: false
+++        Only_Activate_When_Standing: false
++     Cooldowns:
++         Berserk: 240
++         Blast_Mining: 60
