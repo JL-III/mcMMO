@@ -21,6 +21,10 @@ import com.gmail.nossr50.util.skills.SkillUtils;
 import com.gmail.nossr50.util.sounds.SoundManager;
 import com.gmail.nossr50.util.sounds.SoundType;
 import com.gmail.nossr50.util.text.StringUtils;
+import com.nessxxiii.titantools.itemmanagement.ItemInfo;
+import com.playtheatria.jliii.generalutils.utils.Response;
+import net.kyori.adventure.text.Component;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -30,6 +34,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -64,6 +69,17 @@ public class SalvageManager extends SkillManager {
 
     public void handleSalvage(Location location, ItemStack item) {
         final Player player = getPlayer();
+/*
+Theatria Patch Begins!
+* */
+        Response<List<String>> loreListResponse = ItemInfo.getLore(item);
+        if (loreListResponse.isSuccess()) {
+            player.sendMessage(ChatColor.RED + "You can't salvage items with lore!");
+            return;
+        }
+/*
+Theatria Patch Ends!
+*/
 
         final Salvageable salvageable = mcMMO.getSalvageableManager().getSalvageable(item.getType());
         final ItemMeta meta = item.getItemMeta();
@@ -135,7 +151,6 @@ public class SalvageManager extends SkillManager {
         }
 
         ItemStack salvageResults = new ItemStack(salvageable.getSalvageMaterial(), lotteryResults);
-
         //Call event
         if (EventUtils.callSalvageCheckEvent(player, item, salvageResults, enchantBook).isCancelled()) {
             return;
