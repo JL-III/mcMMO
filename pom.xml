@@ -265,6 +265,12 @@
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
+<!--        Theatria Patch -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+<!--        Theatria Patch -->
     </repositories>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
@@ -474,5 +480,17 @@
 <!--            <version>LATEST</version>-->
 <!--            <scope>test</scope>-->
 <!--        </dependency>-->
+<!--        Theatria Patch   -->
+        <dependency>
+            <groupId>com.github.JL-III</groupId>
+            <artifactId>TitanTools</artifactId>
+            <version>v2.0.1-alpha.23</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.JL-III</groupId>
+            <artifactId>GeneralUtils</artifactId>
+            <version>v1.0.4-alpha.3</version>
+        </dependency>
+<!--        Theatria Patch   -->
     </dependencies>
 </project>

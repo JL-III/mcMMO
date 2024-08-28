@@ -30,6 +30,8 @@ import com.gmail.nossr50.util.sounds.SoundManager;
 import com.gmail.nossr50.util.sounds.SoundType;
 import com.gmail.nossr50.worldguard.WorldGuardManager;
 import com.gmail.nossr50.worldguard.WorldGuardUtils;
+import com.nessxxiii.titantools.itemmanagement.ItemInfo;
+import com.playtheatria.jliii.generalutils.utils.Response;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -50,6 +52,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Locale;
 
 public class PlayerListener implements Listener {
@@ -785,6 +788,21 @@ public class PlayerListener implements Listener {
             }
         }
 
+/*
+ * ATTENTION!
+ * Theatria Patch started
+ * Check to see if
+ * */
+        Response<List<String>> loreListResponse = ItemInfo.getLore(player.getInventory().getItemInMainHand());
+        if (loreListResponse.isSuccess()) {
+                if (ItemInfo.isTitanTool(loreListResponse.value())) {
+                        return;
+                    }
+            }
+/*
+ * Theatria Patch ended
+ *
+ * */
         switch (event.getAction()) {
             case RIGHT_CLICK_BLOCK:
                 if (player.getInventory().getItemInOffHand().getType() != Material.AIR && !player.isInsideVehicle() && !player.isSneaking()) {

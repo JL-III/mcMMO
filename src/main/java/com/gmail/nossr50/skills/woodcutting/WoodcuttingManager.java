@@ -18,6 +18,8 @@ import com.gmail.nossr50.util.random.ProbabilityUtil;
 import com.gmail.nossr50.util.skills.CombatUtils;
 import com.gmail.nossr50.util.skills.RankUtils;
 import com.gmail.nossr50.util.skills.SkillUtils;
+import com.nessxxiii.titantools.itemmanagement.ItemInfo;
+import com.playtheatria.jliii.generalutils.utils.Response;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -73,7 +75,20 @@ public class WoodcuttingManager extends SkillManager {
                 && ItemUtils.isAxe(heldItem);
     }
 
+/**
+ * ATTENTION!
+ * Theatria Patch Begins
+ * Disable the ability to use tree feller on titan axes
+ * */
     public boolean canUseTreeFeller(ItemStack heldItem) {
+        //Fetch lore list response if there is lore check if it's a titan tool, if so, return false
+        Response<List<String>> loreListResponse = ItemInfo.getLore(heldItem);
+        if (loreListResponse.isSuccess()) {
+            if (ItemInfo.isTitanTool(loreListResponse.value())) {
+                return false;
+            }
+        }
+//Theatria Patch Ends
         return mmoPlayer.getAbilityMode(SuperAbilityType.TREE_FELLER)
                 && ItemUtils.isAxe(heldItem);
     }
@@ -137,7 +152,6 @@ public class WoodcuttingManager extends SkillManager {
     public void processTreeFeller(BlockState blockState) {
         Player player = getPlayer();
         Set<BlockState> treeFellerBlocks = new HashSet<>();
-
         treeFellerReachedThreshold = false;
 
         processTree(blockState, treeFellerBlocks);

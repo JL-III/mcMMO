@@ -54,6 +54,8 @@ import com.gmail.nossr50.util.skills.SkillTools;
 import com.gmail.nossr50.util.skills.SkillUtils;
 import com.gmail.nossr50.util.sounds.SoundManager;
 import com.gmail.nossr50.util.sounds.SoundType;
+import com.nessxxiii.titantools.itemmanagement.ItemInfo;
+import com.playtheatria.jliii.generalutils.utils.Response;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import org.bukkit.Bukkit;
@@ -70,6 +72,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -905,6 +908,22 @@ public class McMMOPlayer implements Identified {
             return;
         }
 
+/*
+ * ATTENTION!
+ * Theatria Patch started
+ * Check to see if
+ * */
+                Response<List<String>> loreListResponse = ItemInfo.getLore(player.getInventory().getItemInMainHand());
+        if (loreListResponse.isSuccess()) {
+                if (ItemInfo.isTitanTool(loreListResponse.value())) {
+                        return;
+                    }
+            }
+/*
+* Theatria Patch ended
+*
+* */
+
         //TODO: This is hacky and temporary solution until skills are move to the new system
         //Potential problems with this include skills with two super abilities (ie mining)
         if (!RankUtils.hasUnlockedSubskill(player, subSkillType)) {
@@ -981,6 +1000,10 @@ public class McMMOPlayer implements Identified {
         }
 
         if (mcMMO.p.getGeneralConfig().getAbilitiesOnlyActivateWhenSneaking() && !player.isSneaking()) {
+            return;
+        }
+
+        if (mcMMO.p.getGeneralConfig().getAbilitiesOnlyActivateWhenStanding() && player.isSneaking()) {
             return;
         }
 
