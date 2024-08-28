@@ -146,6 +146,55 @@ index 74f262289..c7c18380e 100644
          switch (event.getAction()) {
              case RIGHT_CLICK_BLOCK:
                  if (player.getInventory().getItemInOffHand().getType() != Material.AIR && !player.isInsideVehicle() && !player.isSneaking()) {
+diff --git a/src/main/java/com/gmail/nossr50/skills/salvage/SalvageManager.java b/src/main/java/com/gmail/nossr50/skills/salvage/SalvageManager.java
+index e1bf40e08..ff4af6f1a 100644
+--- a/src/main/java/com/gmail/nossr50/skills/salvage/SalvageManager.java
++++ b/src/main/java/com/gmail/nossr50/skills/salvage/SalvageManager.java
+@@ -21,6 +21,10 @@ import com.gmail.nossr50.util.skills.SkillUtils;
+ import com.gmail.nossr50.util.sounds.SoundManager;
+ import com.gmail.nossr50.util.sounds.SoundType;
+ import com.gmail.nossr50.util.text.StringUtils;
++import com.nessxxiii.titantools.itemmanagement.ItemInfo;
++import com.playtheatria.jliii.generalutils.utils.Response;
++import net.kyori.adventure.text.Component;
++import org.bukkit.ChatColor;
+ import org.bukkit.Location;
+ import org.bukkit.Material;
+ import org.bukkit.enchantments.Enchantment;
+@@ -30,6 +34,7 @@ import org.bukkit.inventory.meta.Damageable;
+ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+ import org.bukkit.inventory.meta.ItemMeta;
+ 
++import java.util.List;
+ import java.util.Map;
+ import java.util.Map.Entry;
+ 
+@@ -64,6 +69,17 @@ public class SalvageManager extends SkillManager {
+ 
+     public void handleSalvage(Location location, ItemStack item) {
+         final Player player = getPlayer();
++/*
++Theatria Patch Begins!
++* */
++        Response<List<String>> loreListResponse = ItemInfo.getLore(item);
++        if (loreListResponse.isSuccess()) {
++            player.sendMessage(ChatColor.RED + "You can't salvage items with lore!");
++            return;
++        }
++/*
++Theatria Patch Ends!
++*/
+ 
+         final Salvageable salvageable = mcMMO.getSalvageableManager().getSalvageable(item.getType());
+         final ItemMeta meta = item.getItemMeta();
+@@ -135,7 +151,6 @@ public class SalvageManager extends SkillManager {
+         }
+ 
+         ItemStack salvageResults = new ItemStack(salvageable.getSalvageMaterial(), lotteryResults);
+-
+         //Call event
+         if (EventUtils.callSalvageCheckEvent(player, item, salvageResults, enchantBook).isCancelled()) {
+             return;
 diff --git a/src/main/java/com/gmail/nossr50/skills/woodcutting/WoodcuttingManager.java b/src/main/java/com/gmail/nossr50/skills/woodcutting/WoodcuttingManager.java
 index 09ddaa8bc..2ce985222 100644
 --- a/src/main/java/com/gmail/nossr50/skills/woodcutting/WoodcuttingManager.java
