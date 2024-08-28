@@ -23,6 +23,8 @@ import com.gmail.nossr50.util.sounds.SoundType;
 import com.gmail.nossr50.util.text.StringUtils;
 import com.nessxxiii.titantools.itemmanagement.ItemInfo;
 import com.playtheatria.jliii.generalutils.utils.Response;
+import net.kyori.adventure.text.Component;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -72,9 +74,8 @@ Theatria Patch Begins!
 * */
         Response<List<String>> loreListResponse = ItemInfo.getLore(item);
         if (loreListResponse.isSuccess()) {
-            if (ItemInfo.isTitanTool(loreListResponse.value())) {
-                return;
-            }
+            player.sendMessage(ChatColor.RED + "You can't salvage items with lore!");
+            return;
         }
 /*
 Theatria Patch Ends!
