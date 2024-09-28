@@ -160,6 +160,7 @@
                             <include>net.kyori:adventure-text-serializer-craftbukkit</include>
                             <include>co.aikar:acf-bukkit</include>
                             <include>com.tcoded:FoliaLib</include>
+                            <include>com.github.JL-III</include>
                         </includes>
                     </artifactSet>
                     <relocations>
@@ -194,6 +195,10 @@
                         <relocation>
                             <pattern>com.tcoded.folialib</pattern>
                             <shadedPattern>com.gmail.nossr50.mcmmo.folialib</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.github.JL-III</pattern>
+                            <shadedPattern>com.gmail.nossr50.mcmmo.JL-III</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -489,7 +494,7 @@
         <dependency>
             <groupId>com.github.JL-III</groupId>
             <artifactId>GeneralUtils</artifactId>
-            <version>v1.0.4-alpha.3</version>
+            <version>v1.0.4-alpha.5</version>
         </dependency>
 <!--        Theatria Patch   -->
     </dependencies>
