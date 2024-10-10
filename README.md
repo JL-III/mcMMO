@@ -1,5 +1,7 @@
 # mcMMO
 ## The #1 RPG Mod for Minecraft
+[![](https://jitpack.io/v/JL-III/mcMMO-jl-iii-fork.svg)](https://jitpack.io/#JL-III/mcMMO-jl-iii-fork)
+
 
 ## Website
 I'm working on a brand new website for mcMMO
