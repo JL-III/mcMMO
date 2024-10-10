@@ -5,3 +5,4 @@ install:
   - tar -xvzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
   - export PATH=$PWD/apache-maven-${MAVEN_VERSION}/bin:$PATH
   - mvn --version
+  - mvn install -DskipTests
