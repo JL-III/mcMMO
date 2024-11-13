@@ -272,8 +272,11 @@
         </repository>
 <!--        Theatria Patch -->
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/JL-III/GeneralUtils</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
 <!--        Theatria Patch -->
     </repositories>
@@ -487,14 +490,14 @@
 <!--        </dependency>-->
 <!--        Theatria Patch   -->
         <dependency>
-            <groupId>com.github.JL-III</groupId>
-            <artifactId>TitanTools</artifactId>
-            <version>v2.0.1-alpha.23</version>
+            <groupId>com.playtheatria.jl-iii</groupId>
+            <artifactId>generalutils</artifactId>
+            <version>v2.0.0-alpha.2</version>
         </dependency>
         <dependency>
-            <groupId>com.github.JL-III</groupId>
-            <artifactId>GeneralUtils</artifactId>
-            <version>v1.0.4-alpha.5</version>
+            <groupId>com.nessxxiii</groupId>
+            <artifactId>titantools</artifactId>
+            <version>v2.0.1-alpha.45</version>
         </dependency>
 <!--        Theatria Patch   -->
     </dependencies>
