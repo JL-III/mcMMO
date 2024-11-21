@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gmail.nossr50.mcmmo</groupId>
     <artifactId>mcmmo</artifactId>
-    <version>v2.2.030</version>
+    <version>v2.2.031</version>
     <name>mcMMO</name>
     <url>https://github.com/mcMMO-Dev/mcMMO</url>
     <properties>
@@ -344,7 +344,7 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <version>LATEST</version>
+            <version>4.3.3</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
